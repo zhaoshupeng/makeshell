@@ -63,3 +63,9 @@ all: check build
 build: $(TARGETS)
 
 packages = $(shell go list ./...|grep -v /vendor/)
+
+gomod:
+	@GIT_LFS_SKIP_SMUDGE=1 $(GO) mod tidy
+	@chmod -R +w $(GOPATH)/pkg/mod/$(GOMOD_PATH)
+	@rm -rf $(GOPATH)/pkg/mod/$(GOMOD_PATH)/lib64
+	@ln -s $(shell pwd)/lib64_internal $(GOPATH)/pkg/mod/$(GOMOD_PATH)/lib64
