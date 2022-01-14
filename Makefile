@@ -69,7 +69,13 @@ gomod:
 	@chmod -R +w $(GOPATH)/pkg/mod/$(GOMOD_PATH)
 	@rm -rf $(GOPATH)/pkg/mod/$(GOMOD_PATH)/lib64
 	@ln -s $(shell pwd)/lib64_internal $(GOPATH)/pkg/mod/$(GOMOD_PATH)/lib64
+
 test: gomod check
 	@env LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(shell pwd)/lib64_internal:$(shell pwd)/libs/kestrel:$(shell pwd)/libs:$(arch_ld_library_path) \
 		CGO_CFLAGS="-w -O2" \
 		$(GO) test -v -cover -count=1 ${packages} 2>&1
+
+test_service_face: gomod check
+	@env LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(shell pwd)/lib64_internal:$(shell pwd)/libs/kestrel:$(shell pwd)/libs:$(arch_ld_library_path) \
+		CGO_CFLAGS="-w -O2" \
+		$(GO_DLV) test ${TEST_VERS} gitlab.bj.sensetime.com/finance_cloud/go-workers-kestrel/service/faceworker
